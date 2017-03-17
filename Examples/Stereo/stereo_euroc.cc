@@ -32,13 +32,13 @@
 using namespace std;
 
 void LoadImages(const string &strPathLeft, const string &strPathRight, const string &strPathTimes,
-                vector<string> &vstrImageLeft, vector<string> &vstrImageRight, vector<double> &vTimeStamps);
+                vector<string> &vstrImageLeft, vector<string> &vstrImageRight, vector<double> &vTimeStamps, const char* ext);
 
 int main(int argc, char **argv)
 {
-    if(argc != 6)
+    if(argc != 6 && argc != 7)
     {
-        cerr << endl << "Usage: ./stereo_euroc path_to_vocabulary path_to_settings path_to_left_folder path_to_right_folder path_to_times_file" << endl;
+        cerr << endl << "Usage: ./stereo_euroc path_to_vocabulary path_to_settings path_to_left_folder path_to_right_folder path_to_times_file [image extension(default: .png)]" << endl;
         return 1;
     }
 
@@ -46,7 +46,7 @@ int main(int argc, char **argv)
     vector<string> vstrImageLeft;
     vector<string> vstrImageRight;
     vector<double> vTimeStamp;
-    LoadImages(string(argv[3]), string(argv[4]), string(argv[5]), vstrImageLeft, vstrImageRight, vTimeStamp);
+    LoadImages(string(argv[3]), string(argv[4]), string(argv[5]), vstrImageLeft, vstrImageRight, vTimeStamp, argc == 7 ? argv[6] : ".png");
 
     if(vstrImageLeft.empty() || vstrImageRight.empty())
     {
@@ -190,7 +190,7 @@ int main(int argc, char **argv)
 }
 
 void LoadImages(const string &strPathLeft, const string &strPathRight, const string &strPathTimes,
-                vector<string> &vstrImageLeft, vector<string> &vstrImageRight, vector<double> &vTimeStamps)
+                vector<string> &vstrImageLeft, vector<string> &vstrImageRight, vector<double> &vTimeStamps, const char* ext)
 {
     ifstream fTimes;
     fTimes.open(strPathTimes.c_str());
@@ -205,8 +205,8 @@ void LoadImages(const string &strPathLeft, const string &strPathRight, const str
         {
             stringstream ss;
             ss << s;
-            vstrImageLeft.push_back(strPathLeft + "/" + ss.str() + ".png");
-            vstrImageRight.push_back(strPathRight + "/" + ss.str() + ".png");
+            vstrImageLeft.push_back(strPathLeft + "/" + ss.str() + ext);
+            vstrImageRight.push_back(strPathRight + "/" + ss.str() + ext);
             double t;
             ss >> t;
             vTimeStamps.push_back(t/1e9);
@@ -214,3 +214,4 @@ void LoadImages(const string &strPathLeft, const string &strPathRight, const str
         }
     }
 }
+
