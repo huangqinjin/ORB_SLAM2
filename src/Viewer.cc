@@ -157,7 +157,7 @@ void Viewer::Run()
         {
             while(isStopped())
             {
-                usleep(3000);
+                this_thread::sleep_for(chrono::microseconds(3000));
             }
         }
 
